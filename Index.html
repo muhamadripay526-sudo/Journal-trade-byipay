@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOURNA BY Ipay | Premium Trading Analytics</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="dark-theme">
+
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i data-lucide="trending-up" class="text-neon"></i>
+                <span class="logo-text">IPAY<span class="text-neon">.</span>FX</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-tab="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="#" class="nav-item" data-tab="add-trade"><i data-lucide="plus-circle"></i> Input Trade</a>
+                <a href="#" class="nav-item" data-tab="journal-logs"><i data-lucide="book-open"></i> Jurnal</a>
+                <a href="#" class="nav-item" data-tab="risk-calc"><i data-lucide="calculator"></i> Kalkulator</a>
+                <a href="#" class="nav-item" data-tab="ai-assistant"><i data-lucide="cpu"></i> AI Insights</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="btn-icon"><i data-lucide="sun"></i></button>
+                <div class="account-selector">
+                    <select id="account-type">
+                        <option value="personal">Personal Account</option>
+                        <option value="prop">Prop Firm Acc</option>
+                        <option value="demo">Demo Account</option>
+                    </select>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-title">
+                    <h1 id="page-title">Dashboard Utama</h1>
+                    <p class="text-muted">Pantau dan analisis performa trading Anda</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="btn-export"><i data-lucide="download"></i> Export JSON</button>
+                    <button class="btn btn-primary" onclick="switchTab('add-trade')"><i data-lucide="plus"></i> New Trade</button>
+                </div>
+            </header>
+
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card card-gradient">
+                        <div class="stat-header">
+                            <span class="text-muted">Total Net Profit</span>
+                            <i data-lucide="wallet" class="text-neon"></i>
+                        </div>
+                        <h2 id="stat-total-profit">$0.00</h2>
+                        <span class="badge badge-success" id="stat-growth">+0% Growth</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="text-muted">Win Rate</span>
+                            <i data-lucide="pie-chart" class="text-blue"></i>
+                        </div>
+                        <h2 id="stat-winrate">0%</h2>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="winrate-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="text-muted">Total Trades</span>
+                            <i data-lucide="bar-chart-2"></i>
+                        </div>
+                        <h2 id="stat-total-trades">0</h2>
+                        <span class="text-muted text-sm"><span id="stat-wins">0</span>W - <span id="stat-losses">0</span>L</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="text-muted">Avg Risk Reward</span>
+                            <i data-lucide="scale"></i>
+                        </div>
+                        <h2 id="stat-avg-rr">1:0.0</h2>
+                        <span class="text-muted text-sm" id="stat-streak">Streak: 0W / 0L</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-mid-grid">
+                    <div class="card target-card">
+                        <h3>Target Trading Bulanan</h3>
+                        <div class="target-progress-wrapper">
+                            <div class="target-info">
+                                <span id="target-current">$0</span>
+                                <span class="text-muted">dari / $5,000 Target</span>
+                            </div>
+                            <div class="progress-bar-container large">
+                                <div class="progress-bar progress-neon" id="target-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card ai-brief-card">
+                        <div class="ai-header">
+                            <i data-lucide="cpu" class="text-neon"></i>
+                            <h3>AI Assistant Insight Brief</h3>
+                        </div>
+                        <p id="ai-brief-text" class="text-muted">Belum ada data trading yang cukup untuk dianalisis oleh AI.</p>
+                    </div>
+                </div>
+
+                <div class="card table-card">
+                    <div class="card-header">
+                        <h3>Riwayat Trade Terakhir</h3>
+                        <button class="btn btn-text" onclick="switchTab('journal-logs')">Lihat Semua</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="recent-trades-table">
+                            <thead>
+                                <tr>
+                                    <th>Pair/Symbol</th>
+                                    <th>Tipe</th>
+                                    <th>Entry Price</th>
+                                    <th>Exit Price</th>
+                                    <th>Risk/Reward</th>
+                                    <th>Profit/Loss</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-add-trade" class="tab-content">
+                <form id="trade-form" class="trade-form-grid">
+                    <div class="card form-left">
+                        <h3>Detail Transaksi</h3>
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label>Pair / Symbol</label>
+                                <input type="text" id="form-pair" placeholder="e.g. EURUSD, BTCUSD" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tipe Transaksi</label>
+                                <select id="form-type">
+                                    <option value="BUY">BUY (Long)</option>
+                                    <option value="SELL">SELL (Short)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label>Entry Price</label>
+                                <input type="number" step="any" id="form-entry" placeholder="0.0000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Lot Size</label>
+                                <input type="number" step="any" id="form-lot" placeholder="0.1" required>
+                            </div>
+                        </div>
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label>Stop Loss (SL)</label>
+                                <input type="number" step="any" id="form-sl" placeholder="0.0000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Take Profit (TP)</label>
+                                <input type="number" step="any" id="form-tp" placeholder="0.0000" required>
+                            </div>
+                        </div>
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label>Exit Price</label>
+                                <input type="number" step="any" id="form-exit" placeholder="0.0000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Net Profit/Loss ($)</label>
+                                <input type="number" step="any" id="form-pnl" placeholder="e.g. 150 atau -50" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card form-right">
+                        <h3>Psikologi & Catatan</h3>
+                        <div class="form-group">
+                            <label>Emosi/Psikologi saat Trade (Bisa pilih > 1)</label>
+                            <div class="psychology-checklist">
+                                <label class="check-item"><input type="checkbox" value="Disiplin"> Disiplin</label>
+                                <label class="check-item"><input type="checkbox" value="Sabar"> Sabar</label>
+                                <label class="check-item"><input type="checkbox" value="Takut"> Takut (Fear)</label>
+                                <label class="check-item"><input type="checkbox" value="Serakah"> Serakah (Greed)</label>
+                                <label class="check-item"><input type="checkbox" value="FOMO"> FOMO</label>
+                                <label class="check-item"><input type="checkbox" value="Revenge Trade"> Revenge Trade</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Catatan Trading / Evaluasi</label>
+                            <textarea id="form-notes" rows="4" placeholder="Tuliskan alasan entry, kondisi market, dll..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Screenshot Layout URL (Opsional)</label>
+                            <input type="text" id="form-screenshot" placeholder="https://tradingview.com/x/... atau link gambar">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block"><i data-lucide="save"></i> Simpan ke Jurnal</button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="tab-journal-logs" class="tab-content">
+                <div class="filter-bar card">
+                    <div class="search-input">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="search-journal" placeholder="Cari Pair (misal: BTCUSD)...">
+                    </div>
+                    <div class="filter-actions">
+                        <select id="filter-status">
+                            <option value="ALL">Semua Status</option>
+                            <option value="WIN">Profit Only</option>
+                            <option value="LOSS">Loss Only</option>
+                        </select>
+                        <button class="btn btn-secondary" id="btn-clear-data" style="background: var(--color-loss-alpha); color: var(--color-loss); border: none;">Reset Data</button>
+                    </div>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-responsive">
+                        <table id="full-journal-table">
+                            <thead>
+                                <tr>
+                                    <th>Pair</th>
+                                    <th>Tipe</th>
+                                    <th>Entry</th>
+                                    <th>Exit</th>
+                                    <th>Lot</th>
+                                    <th>R:R</th>
+                                    <th>P&L</th>
+                                    <th>Emosi Utama</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="journal-table-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-risk-calc" class="tab-content">
+                <div class="calc-grid">
+                    <div class="card">
+                        <h3>Kalkulator Ukuran Posisi (Lot Size)</h3>
+                        <div class="form-group">
+                            <label>Balance Akun ($)</label>
+                            <input type="number" id="calc-balance" value="10000">
+                        </div>
+                        <div class="form-group">
+                            <label>Resiko Posisi (%)</label>
+                            <input type="number" id="calc-risk-pct" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Stop Loss (Pips/Points)</label>
+                            <input type="number" id="calc-sl-pips" value="20">
+                        </div>
+                        <div class="form-group">
+                            <label>Nilai per Pip ($ per 1 Lot standar)</label>
+                            <input type="number" id="calc-pip-value" value="10">
+                        </div>
+                        <button class="btn btn-primary" onclick="calculateLotSize()">Hitung Lot</button>
+                        
+                        <div class="calc-result" id="calc-lot-result" style="margin-top: 20px; display: none;">
+                            <p class="text-muted">Rekomendasi Ukuran Lot:</p>
+                            <h2 class="text-neon" id="result-lot">0.50 Lot</h2>
+                            <p class="text-sm text-muted">Jumlah resiko uang: <span id="result-cash">$100</span></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-ai-assistant" class="tab-content">
+                <div class="card ai-panel">
+                    <div class="ai-large-header">
+                        <i data-lucide="cpu" class="text-neon" style="width: 48px; height: 48px;"></i>
+                        <div>
+                            <h2>AI Trading Performance Assistant</h2>
+                            <p class="text-muted">Sistem analitik cerdas yang membedah kebiasaan trading dan psikologi Anda secara realtime.</p>
+                        </div>
+                    </div>
+                    <hr class="divider">
+                    <div class="ai-insights-container">
+                        <div class="insight-box">
+                            <h4><i data-lucide="shield-alert" class="text-loss"></i> Deteksi Masalah Utama</h4>
+                            <p id="ai-flaw">Membutuhkan minimal 3 data trading untuk menemukan kecenderungan emosional negatif.</p>
+                        </div>
+                        <div class="insight-box">
+                            <h4><i data-lucide="zap" class="text-neon"></i> Kekuatan & Setup Terbaik</h4>
+                            <p id="ai-strength">Menunggu akumulasi data untuk memetakan winrate tertinggi berdasarkan pola transaksi Anda.</p>
+                        </div>
+                        <div class="insight-box text-gradient-border">
+                            <h4><i data-lucide="lightbulb" class="text-blue"></i> Rekomendasi Langkah Aksi (Action Plan)</h4>
+                            <ul id="ai-action-list" class="styled-list">
+                                <li>Isi jurnal trading secara disiplin setiap kali menyelesaikan transaksi (Close posisi).</li>
+                                <li>Pastikan mengisi checklist psikologi untuk melihat relasi emosi dengan hasil P&L.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
